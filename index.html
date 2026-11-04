@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부캉이의 여행 알아보기</title>
+<script src="https://whatquiz.co.kr/figure/wq-visual-v1.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:#faf5ec;color:#3b2f2a;font-size:18px;line-height:1.55}
+header{background:#c8643c;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0}
+nav{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;background:#f0e4d2}
+nav button{flex:1;min-width:110px;border:2px solid #c8643c;background:#fff;color:#c8643c;border-radius:12px;padding:10px 6px;font-size:16px;font-weight:bold;cursor:pointer}
+nav button.on{background:#c8643c;color:#fff}
+nav button.done::after{content:" ✓"}
+main{max-width:900px;margin:0 auto;padding:14px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 6px #0001}
+.card h2{margin:0 0 8px;font-size:21px;color:#a8472a}
+textarea,input[type=text]{width:100%;border:2px solid #d9c9b3;border-radius:12px;padding:10px;font-size:19px;font-family:inherit;background:#fffdf9}
+textarea{min-height:90px;resize:vertical}
+label{font-weight:bold;display:block;margin:10px 0 4px}
+.frame{background:#fff6dc;border-left:5px solid #e2b33c;padding:8px 12px;border-radius:8px;font-size:16px;margin:8px 0}
+.book{background:#fff1d2;border-left:5px solid #e0a52d;padding:10px 14px;border-radius:8px;font-size:18px;font-weight:bold;margin:8px 0}
+.guide{background:#eaf4ea;border-left:5px solid #2a9d4f;padding:10px 14px;border-radius:8px;font-size:16px;margin:8px 0}
+.guide ol{margin:6px 0 0;padding-left:22px}
+.mapg{background:#fdeee6;border-left:5px solid #c8643c;padding:10px 14px;border-radius:8px;font-size:15px;margin:8px 0}
+.mapg ol,.mapg ul{margin:6px 0 0;padding-left:22px}
+.chip{display:inline-block;background:#e3f0fb;border-radius:20px;padding:4px 12px;margin:3px;font-size:15px}
+.site{border:2px solid #cfe0f2;border-radius:12px;padding:10px 12px;margin:8px 0;background:#f6faff}
+.site b{font-size:17px}
+.site p{margin:4px 0;font-size:15px}
+.sbtn{display:inline-block;background:#2f6fb0;color:#fff;text-decoration:none;border-radius:10px;padding:8px 14px;margin-top:4px;font-size:16px}
+.evi{border:2px solid #ead5c5;border-radius:14px;padding:12px 14px;margin:8px 0;background:#fffdf9}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;font-weight:bold;font-size:16px}
+.chain span{background:#fde4d8;border-radius:10px;padding:8px 11px}
+.chain b{color:#c8643c;font-size:22px}
+.mapcard{border:2px solid #f0cdb8;border-radius:14px;padding:12px;margin:10px 0;background:#fffaf6}
+.mapcard h3{margin:0 0 6px;color:#a8472a;font-size:19px}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.mbtns button{flex:1;min-width:100px;border:2px solid #c8643c;background:#fff;color:#c8643c;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:bold;cursor:pointer}
+.mbtns button.on{background:#c8643c;color:#fff}
+.lg{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0;font-size:16px;font-weight:bold}
+.sw{display:inline-block;width:20px;height:20px;border-radius:4px;vertical-align:middle;margin-right:5px;border:1px solid #0003}
+.src{font-size:13px;color:#777}
+figure.wq-figure button,figure.wq-figure a,figure.wq-figure .wq-save,figure.wq-figure .wq-actions{display:none!important}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{flex:1;min-width:140px;border:2px solid #2f6fb0;background:#fff;color:#2f6fb0;border-radius:12px;padding:10px;font-size:16px;font-weight:bold;cursor:pointer}
+.tabs button.on{background:#2f6fb0;color:#fff}
+.go{display:flex;justify-content:space-between;margin:16px 0}
+.go button,.big{background:#c8643c;color:#fff;border:0;border-radius:14px;padding:14px 22px;font-size:19px;font-weight:bold;cursor:pointer}
+.go button.gray{background:#aaa}
+pre{white-space:pre-wrap;background:#fffdf9;border:2px dashed #d9c9b3;border-radius:12px;padding:12px;font-family:inherit;font-size:16px}
+.saved{font-size:13px;color:#888;text-align:right}
+#printArea{display:none}
+@media print{
+ body.printing header,body.printing nav,body.printing main{display:none!important}
+ body.printing #printArea{display:block;padding:10mm;background:#fff;color:#000}
+ body.printing #printArea h1{font-size:20pt;margin:0 0 8pt}
+ body.printing #printArea pre{border:0;background:#fff;font-size:11pt;white-space:pre-wrap}
+}
+</style>
+</head>
+<body>
+<header><h1>🦈 부캉이의 여행 알아보기</h1></header>
+<nav id="nav"></nav>
+<main id="view"></main>
+<div id="printArea"></div>
+
+<script>
+var STEPS=[{t:'1 부캉이는 누구?'},{t:'2 부캉이는 어떻게?'},{t:'3 부캉이는 왜?'},{t:'4 정리'}];
+var SITES={
+ nifs:{n:'국립수산과학원',u:'https://www.nifs.go.kr',w:'우리나라 바다 수온과 물고기 변화를 조사하는 국가 기관',h:'첫 화면 검색창에 "수온 상승" 또는 "아열대 어종"을 넣고, 보도자료·연구 결과 글을 열어요.'},
+ kodc:{n:'한국해양자료센터 (국립수산과학원) · 수온 그래프·지도',u:'https://www.nifs.go.kr/kodc/index.kodc',w:'바다 수온을 오랫동안 관측한 자료를 그래프와 지도로 보여 주는 곳. 관측은 1968년부터예요.',h:'첫 화면에서 "동서남해 표층 수온"(바다별 수온 변화 그래프)이나 "한반도 수온·염분 수평 분포"(수온 지도) 메뉴를 열어요.',g:true},
+ mof:{n:'해양수산부',u:'https://www.mof.go.kr',w:'바다와 수산업을 담당하는 정부 부처',h:'첫 화면 검색창에 "어종" 또는 "해양 수산"을 넣고, 보도자료(정부가 공식 발표한 글)를 열어요.'},
+ yna:{n:'연합뉴스',u:'https://www.yna.co.kr',w:'전국 뉴스를 전하는 통신사. 기사 날짜와 기자 이름이 나와요',h:'검색창에 "부산 흑상어"처럼 짧게 넣고, 제목에 사건 내용이 있는 기사를 열어요.'},
+ climate:{n:'기상청 기후정보포털',u:'https://www.climate.go.kr',w:'우리나라와 세계의 기후 변화를 그래프로 보여 주는 곳',h:'검색창에 "기후 변화 현황" 또는 "기온 변화"를 넣고, 그래프와 설명글을 읽어요.'},
+ kma:{n:'기상청',u:'https://www.kma.go.kr',w:'날씨와 기상 자료를 공식으로 알려 주는 곳',h:'검색창에 "폭염" "집중호우" "태풍"을 넣고, 통계나 분석 자료를 열어요.'},
+ me:{n:'환경부',u:'https://www.me.go.kr',w:'환경과 기후 정책을 담당하는 정부 부처',h:'검색창에 "기후 변화"를 넣고, 보도자료나 알림 글을 읽어요.'},
+ khoa:{n:'국립해양조사원',u:'https://www.khoa.go.kr',w:'바다의 높이와 조석을 관측하는 국가 기관',h:'검색창에 "해수면 상승"을 넣고, 우리나라 바다 높이 변화 자료를 찾아요.'},
+ kopri:{n:'극지연구소',u:'https://www.kopri.re.kr',w:'북극과 남극을 연구하는 국가 연구소',h:'검색창에 "빙하" 또는 "해빙"을 넣고, 소식·연구 결과 글을 읽어요.'},
+ nasa:{n:'NASA 기후 변화 (영어)',u:'https://climate.nasa.gov',w:'미국 항공우주국의 기후 자료. 해수면·빙하 그래프가 잘 나와 있어요',h:'"Sea Level" 또는 "Ice Sheets" 메뉴를 열고, 그래프를 봐요. 영어는 브라우저 번역 기능(오른쪽 클릭 → 한국어로 번역)을 써요.'},
+ nie:{n:'국립생태원',u:'https://www.nie.re.kr',w:'생물과 생태계를 연구하는 국가 기관',h:'검색창에 "기후 변화 생태계" 또는 "아열대"를 넣고, 보도자료나 자료실 글을 읽어요.'}
+};
+var EVID=[
+ {id:'e1',t:'자료 1. 우리나라 바다의 수온이 올라가고 있어요',p:['한국해양자료센터는 우리나라 바다의 수온을 오랫동안 관측해요. 1968년부터 2025년까지 우리나라 주변 바다의 표층 수온은 약 1.60℃ 올랐어요.','바닷물이 따뜻해지면 따뜻한 바다에 사는 생물이 살 수 있는 곳이 북쪽으로 넓어질 수 있어요.'],s:['kodc'],q:'바닷물의 온도는 어떻게 변하고 있나요?'},
+ {id:'e2',t:'자료 2. 따뜻한 바다 물고기가 북쪽에서도 보여요',p:['부산 기장 연안에서는 아열대 어종이 차지하는 비율이 2007~2009년 56%에서 2025년 71%로 높아졌어요.','예전에는 더 남쪽 바다에서 주로 보이던 물고기를 우리나라 연안에서도 자주 만나게 됐다는 뜻이에요.'],s:['nifs','nie'],q:'바닷물이 따뜻해지면 따뜻한 바다 물고기는 어느 쪽으로 넓게 살게 될까요?'},
+ {id:'e3',t:'자료 3. 지도로 서식지 변화를 봐요',p:['아래 지도에서 버튼을 눌러 주황색(예전)과 빨간색(요즘 넓어진 곳)을 비교해 봐요. 파란 점줄은 적도(위도 0°)예요.'],map:true,s:[],q:'빨간색은 주황색보다 적도에서 가까운가요, 먼가요? 부산(①)은 어떤 색인가요?'},
+ {id:'e4',t:'자료 4. 먹이를 따라 이동하기도 해요',p:['바다 생물은 수온뿐 아니라 먹이가 있는 곳을 따라 움직여요. 작은 물고기가 북쪽으로 올라오면 그것을 먹는 큰 물고기도 따라올 수 있어요.','부캉이도 따뜻해진 바다와 먹이를 따라 부산까지 왔을 가능성이 있어요. 정확한 이동 경로는 연구 결과를 더 확인해야 해요.'],s:['nifs','mof'],q:'큰 물고기가 이동하게 된 과정을 써 봐요.'}
+];
+var AREAS=[
+ {id:'a1',n:'🧊 빙하 감소와 해수면 상승',kw:['빙하 감소','해수면 상승','해빙'],s:['kopri','khoa','nasa','climate']},
+ {id:'a2',n:'🌪️ 기상 이변 증가',kw:['폭염','집중호우','태풍','가뭄'],s:['kma','climate','me']},
+ {id:'a3',n:'🐟 생태계 변화',kw:['아열대 어종','산호 백화','생태계 변화','표층 수온'],s:['kodc','nie','nifs','mof','yna'],map:true}
+];
+var OLD=['인도네시아','필리핀','태국','베트남','말레이시아','인도','브라질','멕시코','콜롬비아','베네수엘라','파푸아뉴기니','케냐','탄자니아','모잠비크','마다가스카르','나이지리아','쿠바','소말리아'];
+var NEWC=['대한민국','일본','중국','이탈리아','그리스','스페인','포르투갈','이집트','미국','호주','뉴질랜드','아르헨티나','칠레'];
+var CO='#ff9a1f',CN='#e0301e',MAPMODE='both';
+var S={step:0,area:0,h1:'',ev:{e1:'',e2:'',e3:'',e4:''},fin:'',cmp:'',done:[],why:'',pledge:'',
+ areas:{a1:{x:'',y:''},a2:{x:'',y:''},a3:{x:'',y:''}},names:''};
+try{var raw=localStorage.getItem('bukangi12');if(raw){S=Object.assign(S,JSON.parse(raw))}}catch(e){}
+function save(){try{localStorage.setItem('bukangi12',JSON.stringify(S))}catch(e){}var s=document.getElementById('sv');if(s)s.textContent='자동 저장됨 '+new Date().toLocaleTimeString('ko-KR')}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+
+function pairLine(){return '<div class="frame">👫 친구와 함께해요. 한 명은 사이트에서 찾아 소리 내어 읽어 주고, 한 명은 태블릿에 적어요.</div>'}
+function siteGuide(){return '<div class="guide"><b>📘 사이트 이용 가이드</b><ol><li>아래 사이트 카드의 <b>사이트 열기</b>를 눌러요.</li><li>사이트 안 <b>검색창</b>에 카드의 검색어를 넣어요.</li><li><b>보도자료·연구 결과·그래프</b>처럼 기관이 직접 쓴 글을 열어요.</li><li><b>날짜</b>와 <b>만든 기관</b>을 확인해요.</li><li>읽은 내용을 친구에게 설명하고, 사이트 이름을 칸에 적어요.</li></ol></div>'}
+function mapGuide(){return '<div class="mapg"><b>🗺️ 수온 그래프·지도 읽는 법</b><ol><li><b>제목과 기간</b>을 먼저 봐요. 몇 년부터 몇 년까지의 자료인가요?</li><li><b>단위(℃)</b>와 <b>색깔 설명(범례)</b>을 봐요. 빨간색일수록 따뜻한 바다예요.</li><li>그래프는 선이 <b>오른쪽 위로 올라가는지</b> 봐요. 올라가면 수온이 높아지고 있다는 뜻이에요.</li><li>지도는 <b>동해·서해·남해</b> 중 어느 바다가 더 따뜻한지 비교해요.</li><li>친구에게 "○○년에는 ○○℃, 지금은 ○○℃예요"처럼 숫자를 넣어 설명해요.</li></ol><p>※ 이 사이트의 자료는 1968년부터예요. 더 오래된 100년 정도의 변화는 기관 보고서나 보도자료의 설명글에서 찾아봐요.</p></div>'}
+function siteCards(ids){var h='';ids.forEach(function(k){var s=SITES[k];h+='<div class="site"><b>'+s.n+'</b><p>'+s.w+'</p><p>🔎 '+s.h+'</p><a class="sbtn" target="_blank" rel="noopener" href="'+s.u+'">사이트 열기</a>'+(s.g?mapGuide():'')+'</div>'});return h}
+function chips(a){return a.map(function(k){return '<span class="chip">'+k+'</span>'}).join('')}
+
+function mapCard(id){
+ return '<div class="mapcard"><h3>🌏 따뜻한 바다 생물의 서식지, 얼마나 넓어졌을까?</h3>'+
+ '<div class="mbtns"><button class="mb" data-m="old" onclick="setMode(\'old\')">① 예전</button><button class="mb" data-m="now" onclick="setMode(\'now\')">② 요즘</button><button class="mb" data-m="chg" onclick="setMode(\'chg\')">③ 변화만</button></div>'+
+ '<div class="lg"><span><i class="sw" style="background:'+CO+'"></i>예전 주요 서식지</span><span><i class="sw" style="background:'+CN+'"></i>요즘 새로 넓어진 곳</span><span>· · · 적도(위도 0°) 점줄</span><span>● 번호 점: 대표 사례</span></div>'+
+ '<figure class="wq-figure"><div class="hmap" id="'+id+'"></div><figcaption>색으로 보는 서식지 변화 (개념 지도)</figcaption></figure>'+
+ '<div class="mapg"><b>지도 보는 순서</b><ol><li>「예전」을 눌러 <b>주황색</b> 나라를 봐요. 적도(점줄) 가까이에 모여 있나요?</li><li>「요즘」을 눌러 <b>빨간색</b>이 어디에 더 생겼는지 봐요.</li><li>「변화만」을 눌러 빨간색 나라가 적도에서 가까운지 먼지 말해 봐요.</li><li>우리나라(①)는 어떤 색인가요? 왜 그럴까요?</li></ol></div>'+
+ '<div class="guide"><b>번호 점 사례 (자세한 내용은 사이트에서 확인해요)</b><ul style="margin:6px 0 0;padding-left:22px"><li>① 부산: 따뜻한 바다 어종이 북쪽 바다에서도 발견돼요.</li><li>② 지중해 동쪽: 홍해의 생물이 수에즈 운하로 들어와 살아요.</li><li>③ 호주 동쪽 바다: 따뜻한 해류를 따라 열대 어종이 남쪽으로 내려와요.</li><li>④ 미국 북동부 대서양: 많은 물고기가 더 차가운 북쪽으로 옮겨 가요.</li><li>⑤ 호주 대보초: 수온이 오르면 산호가 하얗게 변하는 백화 현상이 나타나요.</li></ul></div>'+
+ '<p class="src">※ 나라 단위로 칠한 학습용 개념 지도예요. 실제 어종별 서식 경계가 아니에요. 정확한 자료는 국립수산과학원, NASA 같은 공식 사이트에서 확인해요.</p></div>'}
+function eqMarkers(){var a=[];for(var lon=-170;lon<=170;lon+=10){a.push({name:lon===-160?'적도 0°':' ',lon:lon,lat:0})}return a}
+function drawMaps(){
+ var els=document.querySelectorAll('.hmap');
+ if(!els.length)return;
+ var fill={};
+ if(MAPMODE!=='chg')OLD.forEach(function(n){fill[n]=CO});
+ if(MAPMODE!=='old')NEWC.forEach(function(n){fill[n]=CN});
+ var bs=document.querySelectorAll('.mb');for(var j=0;j<bs.length;j++){bs[j].className='mb'+(bs[j].getAttribute('data-m')===MAPMODE?' on':'')}
+ var mk=[{name:'① 부산',lon:129.08,lat:35.1},{name:'② 지중해 동쪽',lon:33,lat:34.5},{name:'③ 호주 동쪽',lon:152,lat:-33},{name:'④ 미국 북동부',lon:-69,lat:42},{name:'⑤ 대보초',lon:147,lat:-18}].concat(eqMarkers());
+ for(var i=0;i<els.length;i++){
+  try{
+   if(!window.WQV||!WQV.worldMap){setTimeout(drawMaps,400);return}
+   els[i].innerHTML='';
+   WQV.worldMap(els[i].id,{oceans:true,fill:fill,markers:mk});
+  }catch(e){}
+ }
+}
+function setMode(m){MAPMODE=m;drawMaps()}
+
+function nav(){
+ var h='';STEPS.forEach(function(s,i){h+='<button class="'+(i==S.step?'on ':'')+(S.done.indexOf(i)>=0?'done':'')+'" onclick="goto('+i+')">'+s.t+'</button>'});
+ h+='<button onclick="goto(4)" class="'+(S.step==4?'on':'')+'">📋 모아 보기</button>';
+ document.getElementById('nav').innerHTML=h}
+function goto(i){if(i<4&&S.done.indexOf(S.step)<0&&S.step<4)S.done.push(S.step);S.step=i;save();render();window.scrollTo(0,0)}
+function bind(id,fn){var e=document.getElementById(id);if(e)e.oninput=function(){fn(this.value);save()}}
+
+function render(){
+ nav();var v=document.getElementById('view'),h='';
+ if(S.step==0){
+  h+='<div class="card"><h2>부캉이는 누구?</h2><p>부산 바다에서 따뜻한 바다에 사는 흑상어가 발견되었어요. 우리는 이 흑상어를 <b>부캉이</b>라고 불러요.</p><p><b>친구와 이야기해요:</b> 부캉이는 왜 부산까지 왔을까요?</p></div>';
+  h+='<div class="card"><h2>친구와 함께 쓰는 가설 칸</h2>'+pairLine()+'<textarea id="h1" placeholder="둘이 이야기한 내용을 함께 적어요">'+esc(S.h1)+'</textarea><div class="saved" id="sv"></div></div>';
+ }
+ if(S.step==1){
+  h+='<div class="card"><h2>부캉이는 어떻게?</h2><p>자료 1~4를 차례로 읽어요. 각 자료에서 알게 된 점을 적으면, <b>부캉이가 어떻게 부산까지 왔는지</b> 알 수 있어요.</p>'+pairLine()+'<div class="chain"><span>지구 온도 상승</span><b>→</b><span>바닷물 수온 상승</span><b>→</b><span>따뜻한 바다 물고기·먹이의 북상</span><b>→</b><span>부산에서 부캉이 발견</span></div>'+siteGuide()+'</div>';
+  EVID.forEach(function(e){
+   h+='<div class="card"><h2>'+e.t+'</h2><div class="evi">';
+   e.p.forEach(function(x){h+='<p>'+x+'</p>'});
+   h+='</div>'+(e.map?mapCard('map_'+e.id):'')+siteCards(e.s);
+   h+='<label>🧐 '+e.q+'</label><textarea id="ev_'+e.id+'" placeholder="자료에서 알게 된 점을 적어요">'+esc(S.ev[e.id])+'</textarea></div>'});
+  h+='<div class="card"><h2>자료를 모아 이유 알아내기</h2><div class="frame">📌 부캉이는 누구? 에서 우리가 쓴 생각: <b>'+(S.h1?esc(S.h1):'(아직 쓰지 않았어요)')+'</b></div>';
+  h+='<label>자료를 보니 부캉이는 이래서 부산까지 왔구나!</label><textarea id="fin">'+esc(S.fin)+'</textarea>';
+  h+='<label>처음 생각과 자료를 본 뒤의 생각을 비교해 봐요</label><textarea id="cmp">'+esc(S.cmp)+'</textarea><div class="saved" id="sv"></div></div>';
+ }
+ if(S.step==2){
+  var A=AREAS[S.area],d=S.areas[A.id];
+  h+='<div class="card"><h2>부캉이는 왜?</h2><p>부캉이가 온 것은 지구온난화 때문이에요. 지구온난화로 나타나는 변화를 영역별로 찾아 칸을 채워요.</p><div class="book">📖 교과서 180~181쪽을 참고하여 작성해요.</div>'+pairLine()+'</div>';
+  h+='<div class="tabs">';AREAS.forEach(function(a,i){var ok=S.areas[a.id].x&&S.areas[a.id].y;h+='<button class="'+(i==S.area?'on':'')+'" onclick="area('+i+')">'+a.n+(ok?' ✓':'')+'</button>'});h+='</div>';
+  h+='<div class="card"><h2>'+A.n+'</h2><div class="book">📖 교과서 180~181쪽을 참고하여 작성해요.</div>';
+  h+='<label>① 어떤 일이 일어나고 있나요?</label><textarea id="ax">'+esc(d.x)+'</textarea>';
+  h+='<label>② 어떤 피해가 발생하나요?</label><textarea id="ay">'+esc(d.y)+'</textarea><div class="saved" id="sv"></div></div>';
+  h+='<div class="card"><h2>더 알아보고 싶다면 (참고)</h2><div>검색어: '+chips(A.kw)+'</div>'+(A.map?mapCard('map_'+A.id):'')+siteGuide()+siteCards(A.s)+'</div>';
+ }
+ if(S.step==3){
+  h+='<div class="card"><h2>정리</h2>'+pairLine()+'<label>부캉이는 왜 부산에 나타났나?</label><textarea id="why">'+esc(S.why)+'</textarea>';
+  h+='<label>지구온난화에 도움이 되기 위한 나의 행동 한 가지</label><textarea id="pledge">'+esc(S.pledge)+'</textarea><div class="saved" id="sv"></div></div>';
+ }
+ if(S.step==4){
+  h+='<div class="card"><h2>📋 우리 활동 모아 보기</h2><label>이름 (친구 두 명)</label><input type="text" id="names" value="'+esc(S.names)+'" placeholder="예: 3학년 2반 김○○, 이○○"><p>복사해서 선생님께 제출하거나, PDF로 저장해서 내요.</p><button class="big" onclick="copyAll()">📄 전체 내용 복사하기</button> <button class="big" style="background:#2f6fb0" onclick="savePdf()">⬇️ PDF로 저장하기</button> <span id="cp"></span><pre id="all">'+esc(allText())+'</pre></div>';
+ }
+ if(S.step<4){h+='<div class="go"><button class="gray" onclick="goto('+Math.max(0,S.step-1)+')"'+(S.step==0?' style="visibility:hidden"':'')+'>← 이전</button><button onclick="goto('+(S.step+1)+')">'+(S.step==3?'모아 보기 →':'다음 →')+'</button></div>'}
+ v.innerHTML=h;
+ drawMaps();
+ bind('h1',function(x){S.h1=x});bind('fin',function(x){S.fin=x});bind('cmp',function(x){S.cmp=x});bind('why',function(x){S.why=x});bind('pledge',function(x){S.pledge=x});bind('names',function(x){S.names=x});
+ if(S.step==1)EVID.forEach(function(e){bind('ev_'+e.id,function(x){S.ev[e.id]=x})});
+ if(S.step==2){var id=AREAS[S.area].id;bind('ax',function(x){S.areas[id].x=x});bind('ay',function(x){S.areas[id].y=x})}
+}
+function area(i){S.area=i;save();render()}
+function allText(){
+ var L=['이름: '+(S.names||''),'','■ 부캉이는 누구? (친구와 쓴 가설)',S.h1||'(미작성)','','■ 부캉이는 어떻게? (자료를 보고 알아낸 것)'];
+ EVID.forEach(function(e){L.push('- '+e.t+' → '+(S.ev[e.id]||''))});
+ L.push('부캉이가 온 이유: '+(S.fin||''),'처음 생각과 비교: '+(S.cmp||''),'','■ 부캉이는 왜? (교과서 180~181쪽)');
+ AREAS.forEach(function(a){var d=S.areas[a.id];L.push('['+a.n+']','① 어떤 일이 일어나고 있나요?: '+d.x,'② 어떤 피해가 발생하나요?: '+d.y)});
+ L.push('','■ 정리','부캉이는 왜 부산에 나타났나?: '+(S.why||''),'지구온난화에 도움이 되기 위한 나의 행동 한 가지: '+(S.pledge||''));
+ return L.join('\n')}
+function copyAll(){
+ var t='[부캉이의 여행 알아보기]\n'+allText(),ok=function(){document.getElementById('cp').textContent='복사됐어요!'};
+ try{navigator.clipboard.writeText(t).then(ok,function(){sel()})}catch(e){sel()}
+ function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('all'));var s=window.getSelection();s.removeAllRanges();s.addRange(r);document.getElementById('cp').textContent='글이 선택됐어요. 길게 눌러 복사해요.'}}
+function savePdf(){
+ var p=document.getElementById('printArea');
+ p.innerHTML='<h1>부캉이의 여행 알아보기</h1><pre>'+esc(allText())+'</pre>';
+ document.body.classList.add('printing');
+ var done=function(){document.body.classList.remove('printing')};
+ window.onafterprint=done;
+ try{window.print()}catch(e){done();document.getElementById('cp').textContent='이 화면에서는 인쇄가 막혀 있어요. .html 파일로 받아 크롬에서 열어 주세요.'}
+ setTimeout(function(){if(document.body.classList.contains('printing'))done()},60000)}
+render();
+</script>
+</body>
+</html>
